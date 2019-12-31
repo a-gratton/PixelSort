@@ -11,7 +11,7 @@ from copy import copy
 
 
 def main():
-    mode = SortMode('col', 'l', 'brighter', -1, 100, 256)
+    mode = SortMode('col', 'l', 'darker', -1, 0, 220)
     try:
         im = Image.open("Mixed Signals.jpg").convert("HSV")
         print(im.format, im.size, im.mode)
@@ -23,9 +23,11 @@ def main():
 
 def sort(im, mode):
     if mode.row:
-        sortRow(im, mode)
+        if mode.mode == 0 or mode.mode == 1:
+            sortRow(im, mode)
     else:
-        sortCol(im, mode)
+        if mode.mode == 0 or mode.mode == 1:
+            sortCol(im, mode)
 
 
 def sortCol(source, mode):
@@ -35,21 +37,19 @@ def sortCol(source, mode):
             sort_range = [0]
             for j in range(source.size[1]):
                 if mode.black < pixels[i, j][2]:
-                    sort_range[len(sort_range) - 1] = j
-                    sort_range += [0]
-                elif not (sort_range[len(sort_range) - 1] == -1):
-                    sort_range += [-1]
+                    sort_range.append(j)
+                elif sort_range[-1] != -1:
+                    sort_range.append(-1)
             col = [(0, 0, 0)]
             cols = [[(0, 0, 0), ], ]
-            for j in range(len(sort_range)):
-                if not (sort_range[j] == -1):
-                    col[len(col) - 1] = pixels[i, sort_range[j]]
-                    col += [(0, 0, 0)]
+            for j in sort_range:
+                if j != -1:
+                    col.append(pixels[i, j])
                 else:
-                    cols[len(cols) - 1] = copy(col)
+                    cols[-1] = copy(col)
                     cols += [[(0, 0, 0)]]
                     col = [(0, 0, 0)]
-            cols[len(cols) - 1] = col
+            cols[-1] = col
             for subset in cols:
                 radixSort(subset, 255, mode.hsl)
             colInsert(pixels, cols, sort_range, mode, i)
@@ -59,21 +59,20 @@ def sortCol(source, mode):
             sort_range = [0]
             for j in range(source.size[1]):
                 if pixels[i, j][2] < mode.white:
-                    sort_range[len(sort_range) - 1] = j
-                    sort_range += [0]
-                elif not (sort_range[len(sort_range) - 1] == -1):
-                    sort_range += [-1]
+                    sort_range.append(j)
+                elif sort_range[-1] != -1:
+                    sort_range.append(-1)
             col = [(0, 0, 0)]
             cols = [[(0, 0, 0), ], ]
-            for j in range(len(sort_range)):
-                if not (sort_range[j] == -1):
-                    col[len(col) - 1] = pixels[i, sort_range[j]]
-                    col += [(0, 0, 0)]
+            for j in sort_range:
+                if j != -1:
+                    col.append(pixels[i, j])
                 else:
-                    cols[len(cols) - 1] = copy(col)
+                    cols[-1] = copy(col)
                     cols += [[(0, 0, 0)]]
                     col = [(0, 0, 0)]
-            cols[len(cols) - 1] = col
+            else:
+                cols[-1] = col
             for subset in cols:
                 radixSort(subset, 255, mode.hsl)
             colInsert(pixels, cols, sort_range, mode, i)
@@ -86,22 +85,19 @@ def sortRow(source, mode):
             sort_range = [0]
             for j in range(source.size[0]):
                 if mode.black < pixels[j, i][2]:
-                    sort_range += [0]
-                    sort_range[len(sort_range) - 1] = j
-
-                elif not (sort_range[len(sort_range) - 1] == -1):
-                    sort_range += [-1]
+                    sort_range.append(j)
+                elif sort_range[-1] != -1:
+                    sort_range.append(-1)
             row = [(0, 0, 0)]
             rows = [[(0, 0, 0), ], ]
-            for j in range(len(sort_range)):
-                if not (sort_range[j] == -1):
-                    row[len(row) - 1] = pixels[sort_range[j], i]
-                    row += [(0, 0, 0)]
+            for j in sort_range:
+                if j != -1:
+                    row.append(pixels[j, i])
                 else:
-                    rows[len(rows) - 1] = copy(row)
+                    rows[-1] = (copy(row))
                     rows += [[(0, 0, 0)]]
                     row = [(0, 0, 0)]
-            rows[len(rows) - 1] = row
+            rows[-1] = row
             for subset in rows:
                 radixSort(subset, 255, mode.hsl)
             rowInsert(pixels, rows, sort_range, mode, i)
@@ -111,21 +107,20 @@ def sortRow(source, mode):
             sort_range = [0]
             for j in range(source.size[0]):
                 if pixels[j, i][2] < mode.white:
-                    sort_range += [0]
-                    sort_range[len(sort_range) - 1] = j
-                elif not (sort_range[len(sort_range) - 1] == -1):
-                    sort_range += [-1]
+                    sort_range.append(j)
+                elif sort_range[-1] != -1:
+                    sort_range.append(-1)
             row = [(0, 0, 0)]
             rows = [[(0, 0, 0), ], ]
-            for j in range(len(sort_range)):
-                if not (sort_range[j] == -1):
-                    row[len(row) - 1] = pixels[sort_range[j], i]
+            for j in sort_range:
+                if j != -1:
+                    row[len(row) - 1] = pixels[j, i]
                     row += [(0, 0, 0)]
                 else:
-                    rows[len(rows) - 1] = copy(row)
+                    rows[-1] = copy(row)
                     rows += [[(0, 0, 0)]]
                     row = [(0, 0, 0)]
-            rows[len(rows) - 1] = row
+            rows[-1] = row
             for subset in rows:
                 radixSort(subset, 255, mode.hsl)
             rowInsert(pixels, rows, sort_range, mode, i)
