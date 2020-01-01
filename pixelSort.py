@@ -13,7 +13,7 @@ from functools import partial
 
 
 def main():
-    mode = SortMode('col', 'h', 'brighter', 'sort', 1, 40, 256)
+    mode = SortMode('col', 'l', 'brighter', 'average', 1, 30, 256)
     try:
         im = Image.open("Writing On Stone Star Composite.jpg").convert("HSV")
         print(im.format, im.size, im.mode)
@@ -28,19 +28,19 @@ def sort(im, mode):
     pixels = im.load()
     if mode.row:
         if mode.range_mode == 0 or mode.range_mode == 1:
-            srt = partial(sortRow, im, mode, mode.sort_mode)
+            srt = partial(sortRow, im, mode)
             workers = pool.map(srt, range(im.size[1]))
             for q in range(len(workers)):
                 rowInsert(pixels, workers[q][0], workers[q][1], mode, q)
     else:
         if mode.range_mode == 0 or mode.range_mode == 1:
-            srt = partial(sortCol, im, mode, mode.sort_mode)
+            srt = partial(sortCol, im, mode)
             workers = pool.map(srt, range(im.size[0]))
             for q in range(len(workers)):
                 colInsert(pixels, workers[q][0], workers[q][1], mode, q)
 
 
-def sortCol(source, mode, range_only, i):
+def sortCol(source, mode, i):
     pixels = source.load()
     if mode.range_mode == 0:
         sort_range = [0]
@@ -59,11 +59,13 @@ def sortCol(source, mode, range_only, i):
                 cols += [[(0, 0, 0)]]
                 col = [(0, 0, 0)]
         cols[-1] = col
-        if range_only:
-            return [cols, sort_range]
-        else:
+        if mode.sort_mode == 0:
             for subset in cols:
                 radixSort(subset, 255, mode.hsl)
+            return [cols, sort_range]
+        elif mode.sort_mode == 1:
+            for subset in cols:
+                averageRange(subset)
             return [cols, sort_range]
 
     elif mode.range_mode == 1:
@@ -84,15 +86,17 @@ def sortCol(source, mode, range_only, i):
                 col = [(0, 0, 0)]
         else:
             cols[-1] = col
-        if range_only:
-            return [cols, sort_range]
-        else:
+        if mode.sort_mode == 0:
             for subset in cols:
                 radixSort(subset, 255, mode.hsl)
             return [cols, sort_range]
+        elif mode.sort_mode == 1:
+            for subset in cols:
+                averageRange(subset)
+            return [cols, sort_range]
 
 
-def sortRow(source, mode, range_only, i):
+def sortRow(source, mode, i):
     pixels = source.load()
     if mode.range_mode == 0:
         sort_range = [0]
@@ -111,14 +115,16 @@ def sortRow(source, mode, range_only, i):
                 rows += [[(0, 0, 0)]]
                 row = [(0, 0, 0)]
         rows[-1] = row
-        if range_only:
-            return [rows, sort_range]
-        else:
+        if mode.sort_mode == 0:
             for subset in rows:
                 radixSort(subset, 255, mode.hsl)
             return [rows, sort_range]
+        elif mode.sort_mode == 1:
+            for subset in rows:
+                averageRange(subset)
+            return [rows, sort_range]
 
-    if mode.range_mode == 1:
+    elif mode.range_mode == 1:
         sort_range = [0]
         for j in range(source.size[0]):
             if pixels[j, i][2] < mode.white:
@@ -136,12 +142,26 @@ def sortRow(source, mode, range_only, i):
                 rows += [[(0, 0, 0)]]
                 row = [(0, 0, 0)]
         rows[-1] = row
-        if range_only:
-            return [rows, sort_range]
-        else:
+        if mode.sort_mode == 0:
             for subset in rows:
                 radixSort(subset, 255, mode.hsl)
             return [rows, sort_range]
+        elif mode.sort_mode == 1:
+            for subset in rows:
+                averageRange(subset)
+            return [rows, sort_range]
+
+
+def averageRange(source):
+    average = [0, 0, 0]
+    for pixel in source:
+        for i in range(3):
+            average[i] += pixel[i]
+    for i in range(3):
+        average[i] //= len(source)
+    newPixel = (average[0], average[1], average[2])
+    for i in range(len(source)):
+        source[i] = newPixel
 
 
 def colInsert(pixels, cols, sort_range, mode, col):

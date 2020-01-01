@@ -21,4 +21,5 @@ Future updates will include:
     *   added on 2019-12-31
 * Noise detection to prevent errant black/white pixels from interrupting sort ranges.
 * More sorting modes such as hue-aware ranges.
-* Other non-sorting manipulations such as average-value range filling.
+* Other non-sorting manipulations such as ~~average-value range filling~~.
+    *   average value manipulation added 2019-12-31
