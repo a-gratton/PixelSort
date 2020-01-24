@@ -1,5 +1,5 @@
 from PIL import Image
-from mode import SortMode
+from Script.mode import SortMode
 from copy import copy
 import multiprocessing as mp
 from functools import partial
@@ -26,7 +26,7 @@ from functools import partial
 def main():
     mode = SortMode('row', 'l', 'darker', 'sort', -1, 50, 120, 150, 40)
     try:
-        im = Image.open("Candle lit (blue-purple).jpg").convert("HSV")
+        im = Image.open("./Example Images/Candle lit (blue-purple).jpg").convert("HSV")
         print(im.format, im.size, im.mode)
         sort(im, mode)
         im.show()
