@@ -1,0 +1,8 @@
+Mixed Signals:
+	Sorted using "brighter"edge detection and mode "sort"
+
+Reflections:
+	Sorted using "darker" edge detection and mode "sort"
+
+Starry Nights:
+	Sorted using "brighter" edge detection and mode "average"

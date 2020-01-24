@@ -1,7 +1,6 @@
 # PixelSort
-*work in progress*
-
 A Python pixel sorting utility created using Pillow (a fork of Python Image Library).
+See the Example Images folder for some before/after samples!
 
 Supplied images are first converted into the **HSV** color mode, and then the pixels in each row or column are sorted by their respective **H**ue (color), **S**aturation (intensity) or **V**alue (luminance).
 
@@ -15,11 +14,3 @@ Pixels are sorted using a bitwise base 16 implementation of the *Radix-LSD* sort
 
 Rows/Columns are processed on separate cores simultaneously through use of the Python multiprocessing library.
 
-Future updates will include:
-* Implementation of command-line arguments to improve ease of use.
-* ~~Parallel processing of rows/columns to improve execution time.~~
-    *   added on 2019-12-31
-* Noise detection to prevent errant black/white pixels from interrupting sort ranges.
-* More sorting modes such as hue-aware ranges.
-* Other non-sorting manipulations such as ~~average-value range filling~~.
-    *   average value manipulation added 2019-12-31

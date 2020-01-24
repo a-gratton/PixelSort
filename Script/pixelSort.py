@@ -24,18 +24,20 @@ from functools import partial
 
 
 def main():
-    mode = SortMode('row', 'l', 'darker', 'sort', -1, 50, 120, 150, 40)
+    mode = SortMode('row', 'l', 'brighter', 'sort', -1, 250, 20, 150, 40)
     try:
-        im = Image.open("./Example Images/Candle lit (blue-purple).jpg").convert("HSV")
+        im = Image.open("./Example Images/Mixed Signals.jpg").convert("HSV")
         print(im.format, im.size, im.mode)
         sort(im, mode)
-        im.show()
+        im = im.convert("RGB")
+        im.save('Mixed Signals-edited.png')
+
     except IOError:
         print("File not found")
 
 
 def sort(im, mode):
-    pool = mp.Pool(processes=8)
+    pool = mp.Pool(processes=4)
     pixels = im.load()
     if mode.row:
         if mode.range_mode == 0 or mode.range_mode == 1:
