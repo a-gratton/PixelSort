@@ -1,5 +1,5 @@
 from PIL import Image
-from Script.mode import SortMode
+from mode import SortMode
 from copy import copy
 import multiprocessing as mp
 from functools import partial
@@ -24,20 +24,18 @@ from functools import partial
 
 
 def main():
-    mode = SortMode('row', 'l', 'average', 'sort', 1, 250, 30, 150, 40)
+    mode = SortMode('row', 'l', 'darker', 'sort', -1, 50, 120, 150, 40)
     try:
-        im = Image.open("../Example Images/Candle lit (blue-purple).jpg").convert("HSV")
+        im = Image.open("Candle lit (blue-purple).jpg").convert("HSV")
         print(im.format, im.size, im.mode)
         sort(im, mode)
         im.show()
     except IOError:
         print("File not found")
-    except ValueError:
-        print("Output file extension not specified")
 
 
 def sort(im, mode):
-    pool = mp.Pool(processes=4)
+    pool = mp.Pool(processes=8)
     pixels = im.load()
     if mode.row:
         if mode.range_mode == 0 or mode.range_mode == 1:
