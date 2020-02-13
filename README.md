@@ -52,5 +52,5 @@ to equal the number of cores availible on your local machine.
 
 
 ## License
-This project is licensed under the terms of the MIT license
+This project is licensed under the terms of the MIT license.
 
